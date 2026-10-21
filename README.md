@@ -52,10 +52,10 @@
 | 编译器 / CMake | GCC 13.3.0 / CMake 3.28.3 |
 | ROS 2 | Jazzy（`/opt/ros/jazzy`，apt 安装） |
 | FFmpeg | libavcodec 60.31.102、libavformat 60.16.100、libavutil 58.29.100、libswscale 7.5.100、libswresample 4.12.100（即 FFmpeg 6.1） |
-| 全量编译 | 7 个包，**1 分 12 秒**（32 workers，`-DCMAKE_BUILD_TYPE=Release`），0 error |
+| 全量编译 | 7 个包，**1 分 10–12 秒**（32 workers，`-DCMAKE_BUILD_TYPE=Release`，多次运行区间），0 error |
 | 增量编译 | **6.4 秒** |
-| `colcon test` | **270 tests, 0 errors, 0 failures, 56 skipped** |
-| 端到端运行 | `webp_file` 链路跑通，`CompressedImage` 话题实测 **2.000 Hz**，抖动 **0.41 %**，0.581 MB/s |
+| `colcon test` | **270 tests, 0 errors, 0 failures, 56 skipped**（干净 clone 上连跑多次一致） |
+| 端到端运行 | `webp_file` 链路跑通，`CompressedImage` 话题实测 **2.000 Hz**，抖动 **0.39–0.41 %**，0.581 MB/s |
 
 端到端那一条的原始输出（`scripts/topic_bench.py`，15 秒窗口）：
 

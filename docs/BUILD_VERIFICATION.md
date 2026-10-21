@@ -56,6 +56,9 @@ Summary: 7 packages finished [1min 12s]
   1 package had stderr output: ffmpeg_pipeline_examples
 ```
 
+最终一次在干净 clone（`/tmp/final_ws`，HEAD=`528a01a`）上的全量编译为
+`Summary: 7 packages finished [1min 10s]`，所以文档里写成 1 分 10–12 秒。
+
 唯一的 stderr 是上游 `controller_manager` 引入的 CMake 弃用警告，与代码无关：
 
 ```
@@ -147,6 +150,15 @@ topic,type,qos,messages,window_s,hz,dt_mean_ms,dt_min_ms,dt_max_ms,dt_std_ms,jit
 "读一帧 webp + 编码 + 发布"拖慢；`dt_std=2.05 ms`、抖动 0.41 % 是 Linux 非 RT 调度下的
 正常量级（日志里 `Could not enable FIFO RT scheduling policy` 即未开实时调度）。
 这不是性能结论，只是"链路通、节拍稳"的证据。
+
+同一命令在最终一次干净 clone 验证中复跑，结果一致（抖动略有浮动属正常）：
+
+```
+messages=30 window=14.498s hz=2.000 dt_mean=499.93ms dt_min=494.10ms dt_max=505.71ms
+dt_std=1.97ms jitter=0.39% payload_mean=290314B bw=0.581MB/s
+```
+
+因此文档里把抖动写成区间 0.39–0.41 %，全量编译写成 1 分 10–12 秒。
 
 ## 5. `h265_camera` 示例的验证边界
 
