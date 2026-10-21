@@ -25,7 +25,7 @@ jobs:
       - name: Checkout ffmpeg_pipeline
         uses: actions/checkout@v4
         with:
-          repository: yoshito-n-students/ffmpeg_pipeline
+          repository: ${{ github.repository }}
           ref: ${{ github.ref_name }}
           path: src/ffmpeg_pipeline
       # Install dependencies
