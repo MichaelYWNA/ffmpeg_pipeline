@@ -84,9 +84,17 @@ LA57 的内核上实测，所以标为推断。
 - `.github/workflows/ci.yml` 里 checkout 硬编码了 `repository: yoshito-n-students/ffmpeg_pipeline`，
   fork 之后 CI 会去拉上游代码、构建的却不是自己的分支。已改为 `${{ github.repository }}`。
 
-## 6. `xmllint` 在受限网络下会撞 60 s 超时 **[已确认·环境相关]**
+## 6. `xmllint` 在受限网络下会撞 60 s 超时 **[已确认·环境相关]** **[已规避]**
 
 `ament_xmllint` 对含 `<?xml-model href="http://download.ros.org/schema/package_format3.xsd"?>`
-的 `package.xml` 需要联网取 schema。网络抖动时会超过 `ament_add_test` 默认的 `TIMEOUT 60`
-而报 "did not generate a result file"，同一命令重跑 0.6 s 就过。这不是代码问题，
-但会让 CI 出现假红，值得知道。
+的 `package.xml` 需要联网取 schema，网络抖动时会超过 `ament_add_test` 默认的 `TIMEOUT 60`
+而报 "did not generate a result file" —— 表现为"每次挂的包不一样"的假红。
+
+把 schema 落到本地并用 XML catalog 映射后，同一条校验从"偶发 60 s+"变成 0.002 s，
+`ament_xmllint` 稳定 61–63 ms。仓库里给了 `scripts/setup_xml_catalog.sh`：
+
+```bash
+sudo bash scripts/setup_xml_catalog.sh
+```
+
+这不是代码问题，但会让 CI 出现假红，值得知道。

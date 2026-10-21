@@ -190,9 +190,28 @@ python3 src/ffmpeg_pipeline/scripts/topic_bench.py \
 
 ## 7. 环境相关的坑（不是代码问题，但会浪费时间）
 
-1. **`xmllint` 偶发 60 s 超时**：`package.xml` 里的 `<?xml-model href="http://download.ros.org/schema/...">`
-   需要联网取 schema，网络抖动会撞上 `ament_add_test` 默认 `TIMEOUT 60`，报
-   "did not generate a result file"。同一条命令重跑 0.64 s 就过。本记录里最终那次全量跑是绿的。
+1. **`xmllint` 偶发假红：已定位根因并规避**。最初三次全量跑里，`xmllint` 分别在不同包上
+   失败一次，报 "did not generate a result file"，耗时卡在 60.0 s —— 正好是
+   `ament_add_test` 的默认 `TIMEOUT`。
+
+   **根因**：每个 `package.xml` 都带着
+   `<?xml-model href="http://download.ros.org/schema/package_format3.xsd"?>`，libxml2 每次
+   lint 都会去网络解析这个 schema；链路抖动时就会超时，于是"随机某个包挂"。这不是代码缺陷。
+
+   **定位**：把 schema 落到本地并用 XML catalog 映射之后，`xmllint --schema http://...` 从
+   "偶发 60 s+" 变成 **0.002 s**，`ament_xmllint` 连跑 5 次稳定 **61–63 ms**：
+
+   ```
+   run 1 rc=0 elapsed=61ms
+   run 2 rc=0 elapsed=63ms
+   run 3 rc=0 elapsed=62ms
+   run 4 rc=0 elapsed=63ms
+   run 5 rc=0 elapsed=63ms
+   ```
+
+   **规避**：`sudo bash scripts/setup_xml_catalog.sh`（本仓库提供）。做完之后在**干净
+   clone**（`/tmp/vws`）上连续两次全量 `colcon test` 都是
+   `270 tests, 0 errors, 0 failures, 56 skipped`，不再出现随机红。
 2. **`colcon test` 的并行度**：32 核默认 32 个 worker 时，lint 类测试容易互相挤到超时；
    用 `--parallel-workers 4` 稳定得多。
 3. **`ros2 control` 子命令要指定 manager**：节点名是 `ros2_control_node`，服务在

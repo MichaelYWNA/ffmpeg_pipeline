@@ -120,6 +120,7 @@ name: image_reader  type: sensor  plugin: ffmpeg_hardware/FFmpegInput  state: ac
 | 新增 `docs/PROVENANCE.md` | 写明上游 commit、哪些是上游代码、哪些是我的改动、为什么改 maintainer |
 | 7 个 `package.xml`：maintainer 换成我，新增 `<author>` 保留原作者 | `<maintainer>` 语义是"这个仓库谁负责"，fork 里就是 fork owner；作者身份不隐藏 |
 | `.github/workflows/ci.yml`：`repository:` 改为 `${{ github.repository }}` | 上游硬编码了自己的仓库，fork 后 CI 会去构建上游代码 |
+| 新增 `scripts/setup_xml_catalog.sh` | `package.xml` 的 `<?xml-model>` 让 `xmllint` 每次联网取 schema，受限网络下会撞 60 s 超时报假红；本地 catalog 后从 60 s+ 降到 62 ms |
 
 ### 3.5 文档
 
@@ -173,6 +174,7 @@ ros2 launch ffmpeg_pipeline_examples h265_camera_pipeline.launch.py
 | 单元测试不再随机失败 | `for i in 1 2 3; do ./build/ffmpeg_cpp/test_frame; done` |
 | 2.000 Hz / 抖动 0.41 % | `python3 src/ffmpeg_pipeline/scripts/topic_bench.py <topic> --seconds 15` |
 | 上游版本与许可证 | `git log -1 --format=%H` / `cat LICENSE docs/PROVENANCE.md` |
+| `xmllint` 不再随机假红 | `sudo bash scripts/setup_xml_catalog.sh` 后连跑 `colcon test` |
 
 ---
 
