@@ -47,6 +47,12 @@ static inline std::string to_string(const AVSampleFormat format) {
 }
 
 static inline std::string to_string(const AVChannelLayout &ch_layout) {
+  // An unset layout has no meaningful description, but av_channel_layout_describe() still
+  // reports one ("0 channels" on libavutil 58). Report an empty string instead so callers
+  // can test "is this frame audio?" with ch_layout_str().empty().
+  if (ch_layout.nb_channels <= 0) {
+    return "";
+  }
   char buf[256];
   if (av_channel_layout_describe(&ch_layout, buf, sizeof(buf)) >= 0) {
     // av_channel_layout_describe() includes the terminating null character
@@ -88,9 +94,13 @@ static inline AVMediaType to_media_type(const std::string &str) {
 }
 
 static inline AVChannelLayout to_channel_layout(const std::string &str) {
-  AVChannelLayout ch_layout;
+  // Value-initialize first: av_channel_layout_from_string() may fail without touching the
+  // struct, and leaving "order"/"u" indeterminate would hand garbage to the caller (this
+  // used to make Frame::create(frame_msg) behave differently from run to run).
+  AVChannelLayout ch_layout = {};
   if (const int ret = av_channel_layout_from_string(&ch_layout, str.c_str()); ret < 0) {
-    ch_layout.nb_channels = 0; // make it invalid if parsing fails
+    av_channel_layout_uninit(&ch_layout); // release anything the parser may have allocated
+    ch_layout = AVChannelLayout{};        // order = AV_CHANNEL_ORDER_UNSPEC, nb_channels = 0
   }
   return ch_layout;
 }
