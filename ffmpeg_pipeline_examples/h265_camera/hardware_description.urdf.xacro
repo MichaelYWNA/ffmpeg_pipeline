@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name="robot">
+
+    <link name="body">
+    </link>
+
+    <!-- H.265/HEVC camera input.
+         Both ffmpeg_hardware/FFmpegInput and ffmpeg_controllers/CompressedImageBroadcaster are
+         upstream plugins; this description only changes the input format and the device defaults
+         so that a camera which outputs HEVC natively can be forwarded without re-encoding.
+         CHANGE BEFORE USE: url must point at your own camera device. -->
+    <ros2_control name="hevc_camera" type="sensor">
+        <hardware>
+            <plugin>ffmpeg_hardware/FFmpegInput</plugin>
+            <!-- <param name="ffmpeg_log_level">verbose</param> -->
+            <param name="url">/dev/video0</param>
+            <param name="format">v4l2</param>
+            <param name="options">
+                input_format: hevc
+                video_size: 1920x1080
+                framerate: 30
+                timestamps: abs
+            </param>
+            <param name="media_type">video</param>
+        </hardware>
+    </ros2_control>
+
+</robot>

@@ -1,0 +1,14 @@
+/**: # Wildcard to match any namespace
+
+  ros2_control_node:
+    ros__parameters:
+      # The camera in hardware_description.urdf.xacro is expected to deliver 30 HEVC frames per
+      # second, so controllers must update faster than that or packets get dropped.
+      update_rate: 30  # Hz
+
+      compressed_image_broadcaster:
+        type: ffmpeg_controllers/CompressedImageBroadcaster
+
+  compressed_image_broadcaster:
+    ros__parameters:
+      input_name: hevc_camera
