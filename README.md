@@ -1,5 +1,7 @@
 # ffmpeg_pipeline · 个人维护分支
 
+[![CI](https://github.com/MichaelYWNA/ffmpeg_pipeline/actions/workflows/ci.yml/badge.svg?branch=jazzy)](https://github.com/MichaelYWNA/ffmpeg_pipeline/actions/workflows/ci.yml)
+
 把 FFmpeg 拆成 ROS 2 可编排积木的音视频流水线：采集 → 解复用 → 解码 → 格式转换 → 编码 →
 复用/输出，每一段都是一个 `ros2_control` 插件，用 YAML 连起来，换编码器或换输入源不用改代码。
 
@@ -56,6 +58,7 @@
 | 增量编译 | **6.4 秒** |
 | `colcon test` | **270 tests, 0 errors, 0 failures, 56 skipped**（干净 clone 上连跑多次一致） |
 | 端到端运行 | `webp_file` 链路跑通，`CompressedImage` 话题实测 **2.000 Hz**，抖动 **0.39–0.41 %**，0.581 MB/s |
+| GitHub Actions | `ros:jazzy-ros-base` 容器里自建自测通过（CI 徽章见页首，run 记录在 Actions 页） |
 
 端到端那一条的原始输出（`scripts/topic_bench.py`，15 秒窗口）：
 
