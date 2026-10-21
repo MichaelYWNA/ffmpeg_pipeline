@@ -4,8 +4,9 @@
   <name>ffmpeg_pipeline_msgs</name>
   <version>0.0.2</version>
   <description>OS 2 message definitions for FFmpeg-based audio/video processing</description>
-  <maintainer email="okada@tohoku.ac.jp">root</maintainer>
+  <maintainer email="MichaelYWNA@users.noreply.github.com">MichaelYWNA</maintainer>
   <license>MIT</license>
+  <author>Yoshito Okada (original author, Tohoku University)</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
