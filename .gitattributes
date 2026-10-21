@@ -1,0 +1,9 @@
+# Normalise line endings so a Windows checkout does not turn LF into CRLF.
+# Python launch files and shell scripts here are executed on Linux, so CRLF would
+# produce "bad interpreter" / flake8 noise the moment someone edits on Windows.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.webp binary
+*.wav binary
